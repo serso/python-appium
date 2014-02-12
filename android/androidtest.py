@@ -3,7 +3,7 @@ from time import sleep
 
 from android.idtype import IdType
 from appiumtest import AppiumTest, get_env_variable
-
+from selenium.common.exceptions import NoSuchElementException
 
 DEVICE_WAIT_TIME = 10
 
@@ -60,6 +60,11 @@ class AndroidTest(AppiumTest):
         else:
             self.package_name = capabilities['app-package']
 
+        if capabilities['app-resource-package']:
+            self.resource_package_name = capabilities['app-resource-package']
+        else:
+            self.resource_package_name = self.package_name
+
         if not capabilities['app-activity']:
             raise ValueError("Start activity must be set")
 
@@ -69,6 +74,21 @@ class AndroidTest(AppiumTest):
     #
     # API METHODS
     #
+
+    def open_tab(self, position):
+        tabs = self.find_elements_by_class_name('android.app.ActionBar$Tab')
+        tabs[position].click()
+
+    def go_home(self):
+        while True:
+            try:
+                up_button = self.find_element_by_id("up", IdType.ANDROID)
+            except NoSuchElementException:
+                break
+
+            home_button = self.find_element_by_id("home", IdType.ANDROID)
+            home_button.click()
+            sleep(0.2)
 
     def open_menu(self):
         self.driver.execute_script("mobile: keyevent", {"keycode": 82})
@@ -84,7 +104,7 @@ class AndroidTest(AppiumTest):
             raise ValueError("Invalid ID type: " + id_type)
 
         if id_type == IdType.PACKAGE:
-            return self.package_name + ":id/" + resource_id
+            return self.resource_package_name + ":id/" + resource_id
         elif id_type == IdType.ANDROID:
             return "android:id/" + resource_id
         else:
@@ -111,6 +131,15 @@ class AndroidTest(AppiumTest):
         :rtype: list
         """
         return self.driver.find_elements_by_id(self.r_id(resource_id, id_type))
+
+    def find_element_by_class_name(self, class_name):
+        return self.driver.find_element_by_class_name(class_name)
+
+    def find_elements_by_class_name(self, class_name):
+        """
+        :rtype: list
+        """
+        return self.driver.find_elements_by_class_name(class_name)
 
     def find_element_by_name(self, name):
         """

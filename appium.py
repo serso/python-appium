@@ -38,5 +38,4 @@ if __name__ == '__main__':
         run_tests(folder, args['tests_pattern'])
 
     for file in files:
-        raise NotImplementedError()
-#       call(["python", file])
+        run_tests(os.path.dirname(file), os.path.basename(file))
