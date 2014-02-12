@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 from pprint import pprint
-from subprocess import call
 
 from appiumparser import AppiumParser
 from appiumtest import run_tests, AppiumTest
@@ -34,8 +33,13 @@ if __name__ == '__main__':
     folders = [f for f in tests if f not in files and os.path.isdir(f)]
 
     AppiumTest.overridden_capabilities = appium_args
+
+    print("Running tests in " + str(len(folders)) + " folders")
     for folder in folders:
+        print("Running tests in " + folder)
         run_tests(folder, args['tests_pattern'])
 
+    print("Running tests in " + str(len(files)) + " files")
     for file in files:
+        print("Running tests in " + file)
         run_tests(os.path.dirname(file), os.path.basename(file))

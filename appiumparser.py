@@ -44,6 +44,11 @@ class AppiumParser:
                                                 "Android only. Package name of the app")
         self.map[self.package.dest] = 'app-package'
 
+        resource_package = parser.add_argument('-rp', '--resource-package', required=False,
+                                               help="Resource package, used when app's package name is renamed. "
+                                                    "Android only")
+        self.map[resource_package.dest] = 'app-resource-package'
+
         self.start_activity = parser.add_argument('-sa', '--start-activity', required=False,
                                                   help="Appium 'app-activity' desired capability. "
                                                        "Android only. Activity which should "
