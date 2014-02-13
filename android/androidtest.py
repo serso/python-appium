@@ -77,7 +77,8 @@ class AndroidTest(AppiumTest):
 
     def open_tab(self, position):
         tabs = self.find_elements_by_class_name('android.app.ActionBar$Tab')
-        tabs[position].click()
+        if not tabs[position].is_selected():
+            tabs[position].click()
 
     def go_home(self):
         while True:
@@ -92,11 +93,16 @@ class AndroidTest(AppiumTest):
 
     def open_menu(self):
         self.driver.execute_script("mobile: keyevent", {"keycode": 82})
-        sleep(0.2)
+        sleep(0.1)
 
     def go_back(self):
         self.driver.execute_script("mobile: keyevent", {"keycode": 4})
         sleep(0.2)
+
+    def hide_keyboard(self):
+        # not implemented => just go back
+        # self.driver.execute_script("mobile: hideKeyboard", {"keyName": "Done"})
+        self.driver.execute_script("mobile: keyevent", {"keycode": 4})
 
     def r_id(self, resource_id, id_type=IdType.PACKAGE):
         """Returns fully qualified Android resource id name"""
@@ -133,10 +139,17 @@ class AndroidTest(AppiumTest):
         return self.driver.find_elements_by_id(self.r_id(resource_id, id_type))
 
     def find_element_by_class_name(self, class_name):
+        """
+        Method tries to find element with specified class name, e.g. 'android.app.ActionBar$Tab'
+        :type class_name: str
+        :rtype: selenium.webdriver.remote.webelement.WebElement
+        """
         return self.driver.find_element_by_class_name(class_name)
 
     def find_elements_by_class_name(self, class_name):
         """
+        Method tries to find elements with specified class name, e.g. 'android.app.ActionBar$Tab'
+        :type class_name: str
         :rtype: list
         """
         return self.driver.find_elements_by_class_name(class_name)
