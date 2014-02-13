@@ -1,9 +1,11 @@
 from subprocess import check_output, Popen, call
 from time import sleep
 
+from selenium.common.exceptions import NoSuchElementException
+
 from android.idtype import IdType
 from appiumtest import AppiumTest, get_env_variable
-from selenium.common.exceptions import NoSuchElementException
+
 
 DEVICE_WAIT_TIME = 10
 
@@ -60,8 +62,13 @@ class AndroidTest(AppiumTest):
         else:
             self.package_name = capabilities['app-package']
 
-        if capabilities['app-resource-package']:
-            self.resource_package_name = capabilities['app-resource-package']
+        try:
+            resource_package = capabilities['app-resource-package']
+        except KeyError:
+            resource_package = None
+
+        if resource_package:
+            self.resource_package_name = resource_package
         else:
             self.resource_package_name = self.package_name
 
